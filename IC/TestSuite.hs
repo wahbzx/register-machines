@@ -2,7 +2,7 @@
 module IC.TestSuite where
 
 import Control.Exception
-import Control.Monad
+import Control.Monad ( forM )
 import Data.List
 
 
