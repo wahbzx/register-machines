@@ -21,3 +21,11 @@ This example is `comp1` in the Haskell code, and the table on the left can be ge
 runShowAllStates comp1
 ```
 ![image](https://user-images.githubusercontent.com/49880129/204119212-f29cb401-23e6-4dad-9c88-9fab54e9de28.png)
+
+
+## TODO:
+
+- [ ] Take into account Eroneous Halts
+- [ ] Build Test Suite
+- [ ] Implement Numerical Coding of pairs, lists and programs
+- [ ] Universal State Machine
