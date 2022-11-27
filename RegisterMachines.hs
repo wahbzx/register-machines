@@ -1,7 +1,9 @@
 module RegisterMachines where
+{-# LANGUAGE FlexibleContexts #-}
+
 import Data.List
 import Data.Maybe
-{-# LANGUAGE FlexibleContexts #-}
+
 
 type Name = Int
 type Value = Int
@@ -28,14 +30,48 @@ type Instruction = (Label, InstructionBody)
 type Program = [Instruction]
 type Computation = (Program, State)
 
+
 comp1 :: Computation
 comp1 = (program1, (0,[0,1,2]))
+
+state1 :: State
+state1 = (4,[3,0,0])
+
+allStates1 :: [State]
+allStates1 = [(4,[3,0,0]),(2,[3,0,0]),(3,[2,0,0]),(2,[2,0,1]),(3,[1,0,1]),(2,[1,0,2]),(0,[1,0,2]),(1,[0,0,2]),(0,[0,1,2])]
 
 comp2 :: Computation
 comp2 = (program2, (0,[0,2,3,0]))
 
+state2 :: State
+state2 = (6,[6,0,3,0])
+
+allStates2 :: [State]
+allStates2 = [(6,[6,0,3,0]),(0,[6,0,3,0]),(4,[6,0,3,0]),(5,[6,0,2,0]),(4,[6,0,2,1]),(5,[6,0,1,1]),(4,[6,0,1,2]),(5,[6,0,0,2]),(4,[6,0,0,3]),(1,[6,0,0,3]),(3,[6,0,0,2]),(2,[5,0,0,2]),(1,[5,0,1,2]),(3,[5,0,1,1]),(2,[4,0,1,1]),(1,[4,0,2,1]),(3,[4,0,2,0]),(2,[3,0,2,0]),(1,[3,0,3,0]),(0,[3,1,3,0]),(4,[3,1,3,0]),(5,[3,1,2,0]),(4,[3,1,2,1]),(5,[3,1,1,1]),(4,[3,1,1,2]),(5,[3,1,0,2]),(4,[3,1,0,3]),(1,[3,1,0,3]),(3,[3,1,0,2]),(2,[2,1,0,2]),(1,[2,1,1,2]),(3,[2,1,1,1]),(2,[1,1,1,1]),(1,[1,1,2,1]),(3,[1,1,2,0]),(2,[0,1,2,0]),(1,[0,1,3,0]),(0,[0,2,3,0])]
+
 comp3 :: Computation
 comp3 = (program3, (0,[0,7]))
+
+state3 :: State
+state3 = (2,[2,0])
+
+allStates3 :: [State]
+allStates3 = [(2,[2,0]),(3,[2,0]),(0,[2,1]),(4,[1,1]),(1,[1,2]),(3,[1,3]),(0,[1,4]),(4,[0,4]),(1,[0,5]),(3,[0,6]),(0,[0,7])]
+
+
+i0 :: Instruction
+i0 = (L 0, RMinus 1 (L 1) (L 2))
+i1 :: Instruction
+i1 = (L 1, RPlus 0 (L 0))
+i2 :: Instruction
+i2 = (L 2, RMinus 2 (L 3) (L 4))
+i3 :: Instruction
+i3 = (L 3, RPlus 0 (L 2))
+i4 :: Instruction
+i4 = (L 4, HALT)
+
+program1 :: [(Label, InstructionBody)]
+program1 = [i0, i1, i2, i3 , i4]
 
 program2 :: Program
 program2 = [(L 0, RMinus 1 (L 1) (L 6)),
@@ -53,16 +89,6 @@ program3 = [(L 0, RMinus 1 (L 3) (L 5)),
             (L 3, RMinus 1 (L 1) (L 2)),
             (L 4, RPlus 0 (L 0)),
             (L 5, HALT)]
-
-i0 = (L 0, RMinus 1 (L 1) (L 2))
-i1 = (L 1, RPlus 0 (L 0))
-i2 = (L 2, RMinus 2 (L 3) (L 4))
-i3 = (L 3, RPlus 0 (L 2))
-i4 = (L 4, HALT)
-
-program1 :: [(Label, InstructionBody)]
-program1 = [i0, i1, i2, i3 , i4]
-        
 
 findInstrPos :: Label -> Program -> Int
 findInstrPos inst ps = res
