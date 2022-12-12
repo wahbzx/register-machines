@@ -4,8 +4,8 @@ module RegisterMachines where
 import Data.List
 import Data.Maybe
 
-type Name = Int
-type Value = Int
+type Name = Integer
+type Value = Integer
 type State = (Name, [Value])
 
 newtype Label = L Name deriving (Eq)
@@ -39,22 +39,22 @@ isHalt e@(ps, (l,vs))
     = snd (ps !! findInstrPos (L l) ps) == HALT
 
 canDecrement :: InstructionBody -> Computation -> Bool
-canDecrement (RMinus reg t f) (ps, state@(l, vs)) = vs !! reg > 0
+canDecrement (RMinus reg t f) (ps, state@(l, vs)) = vs !! fromInteger reg > 0
 canDecrement _ _ = False
 
-decrementAt :: Int -> [Int] -> [Int]
+decrementAt :: Integer -> [Integer] -> [Integer]
 decrementAt n xs 
-    | n >= length xs = error "decrementAt: Out of Range"
+    | n >= toInteger (length xs) = error "decrementAt: Out of Range"
     | otherwise = a ++ (b - 1) : bs
     where
-        (a, b : bs) = splitAt n xs
+        (a, b : bs) = splitAt (fromInteger n) xs
 
-incrementAt :: Int -> [Int] -> [Int]
+incrementAt :: Integer -> [Integer] -> [Integer]
 incrementAt n xs 
-    | n >= length xs = error "incrementAt: Out of Range"
+    | n >= toInteger (length xs) = error "incrementAt: Out of Range"
     | otherwise = a ++ (b + 1) : bs
     where
-        (a, b : bs) = splitAt n xs
+        (a, b : bs) = splitAt (fromInteger n) xs
 
 getNextInstruction :: Computation -> Instruction
 getNextInstruction (ps, state) = ps !! findInstrPos (L (fst state)) ps
@@ -90,6 +90,46 @@ computeShowAllStates e@(program, state)
             where
                 res = executeInstruction next e
                 next = getNextInstruction e
+
+data EncodedPair = EP1 Integer Integer | EP2 Integer Integer
+instance Show EncodedPair where
+    show (EP1 a b) = "《" ++ show a ++ "," ++ show b ++ "》"
+    show (EP2 a b) = "〈" ++ show a ++ "," ++ show b ++ "〉"
+
+-- Examples 27 = ((0,13)) = (2,3)
+decodePair :: EncodedPair -> Integer
+decodePair (EP1 x y) 
+    = (2 ^ x) * (2*y + 1)
+decodePair (EP2 x y) 
+    = (2 ^ x) * (2*y + 1) - 1
+
+encodeIntToEP1 :: Integer -> EncodedPair
+encodeIntToEP1 a = EP1 x (div (y-1) 2)
+    where
+        (x, y) = howManyTwos a
+
+encodeIntToEP2 :: Integer -> EncodedPair
+encodeIntToEP2 a = EP2 x y
+    where
+        EP1 x y = encodeIntToEP1 (a + 1)
+
+howManyTwos :: Integer -> (Integer, Integer)
+howManyTwos a = helper a 0
+    where
+        helper a n
+            | even a = helper (div a 2) (n + 1)
+            | otherwise = (n, a)
+
+
+encodeInstr :: InstructionBody -> EncodedPair
+encodeInstr (RPlus name (L l1))
+    = EP1 (2 * name) l1
+encodeInstr (RMinus name (L l1) (L l2))
+    = EP1 ((2 * name) + 1) (decodePair (EP2 l1 l2))
+encodeInstr HALT
+    = error "0"
+
+
 
 -- Examples
 
