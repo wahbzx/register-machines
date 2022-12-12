@@ -26,6 +26,8 @@ runShowAllStates comp1
 ## TODO:
 
 - [ ] Take into account Eroneous Halts
-- [ ] Build Test Suite
-- [ ] Implement Numerical Coding of pairs, lists and programs
+- [x] Build Test Suite
+- [x] Implement Numerical Coding of Pairs
+- [ ] Implement Numerical Coding of Lists 
+- [ ] Implement Numerical Coding of Programs
 - [ ] Universal State Machine
