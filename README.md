@@ -1,6 +1,6 @@
 # Register Machines
 
-A Haskell implementation of the Register Machines taught in the 2nd Part of the Models of Computation Course
+A Haskell implementation of the Register Machines
 
 Some Background:
 
